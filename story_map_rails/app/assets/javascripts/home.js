@@ -9,21 +9,25 @@ $(document).ready(function(){
       .attr("width", width);
 
   d3.tsv("data/IPCC AR4 multi-model average of detrended globally averaged TAS anomalies relative to 1980-1999 - Sheet2.tsv", function(error, data) {
-    console.log(data);
-  var values = [];
-  debugger;
-  data.forEach(function(d) {
-    Object.values(d).forEach(function(v){
-      if (v > -20 && v < 20) {
-        values.push(v);
-      };
+    var values = [];
+    data.forEach(function(d) {
+      d["year"] = +d["year"];
+      d["20C3M"] = +d["20C3M"];
+      d["commit"] = +d["commit"];
+      d["B1"] = +d["B1"];
+      d["A1B"] = +d["A1B"];
+      d["A2"] = +d["A2"];
+      Object.values(d).forEach(function(v){
+        if (v > -20 && v < 20) {
+          values.push(v);
+        };
+      });
     });
-  });
-  console.log(values)
-
-  x.domain([d3.min(values), d3.max(data)]);
-  data.forEach(function(d) {
-    });
+    console.log(data[0])
+    x.domain(d3.extent(values));
+    console.log(x.domain());
+    data.forEach(function(d) {
+      });
   });
 
   d3.select("#visualization").html("Hello, world!");
