@@ -14,3 +14,12 @@
  *= require_self
  */
  @import "materialize";
+#visualization rect {
+   fill: blue;
+ }
+
+#visualization text {
+   fill: white;
+   font: 10px sans-serif;
+   text-anchor: end;
+ }
