@@ -32,7 +32,7 @@ $(document).ready(function(){
   			.offset(d3.stackOffsetZero);
     var series = stack(data);
     x.domain([2000, 2100]);
-    y.domain([-1, 10]);
+    y.domain([-10, 10]);
 
 
     console.log(x.domain() + " " + y.domain());
