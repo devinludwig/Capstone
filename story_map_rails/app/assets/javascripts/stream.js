@@ -4,7 +4,7 @@ $(document).ready(function(){
   var x = d3.scaleLinear().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
   var xAxis = d3.axisBottom(x);
-  var color = d3.scaleLinear().range(["#aad", "#556"]);
+  var color = d3.scaleLinear().range(["red", "blue"]);
   var stream = d3.select("#stream").attr("width", width).attr("height", height);
 
 
@@ -29,10 +29,10 @@ $(document).ready(function(){
     var years = data.length;
     var  stack = d3.stack()
         .keys(['20C3M',	'commit',	'B1',	'A1B',	'A2'])
-  			.offset(d3.stackOffsetWiggle);
+  			.offset(d3.stackOffsetZero);
     var series = stack(data);
-    x.domain([data[0].year, data[data.length -1].year]);
-    y.domain([-5, 5]);
+    x.domain([2000, 2100]);
+    y.domain([-1, 10]);
 
 
     console.log(x.domain() + " " + y.domain());
@@ -42,7 +42,6 @@ $(document).ready(function(){
         .y0(function(d) { return y(d[0]); })
         .y1(function(d) { return y(d[1]); })
     		.curve(d3.curveBasis);
-debugger;
     stream.selectAll("path").data(series).enter().append("path").attr("d", area).style("fill", function() { return color(Math.random()); });
     stream.append("g")
             .attr("class", "axis axis--x")
