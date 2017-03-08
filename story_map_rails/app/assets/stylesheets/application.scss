@@ -15,6 +15,10 @@
  */
  @import "materialize";
 
+body {
+  background-color: black;
+}
+
 #visualization rect {
    fill: blue;
  }
@@ -29,11 +33,12 @@
   fill: green;
   stroke: black;
   stroke-width: 1px;
+  transition: fill .4s;
 }
 
 .land:hover {
   fill:#33CC33;
-  stroke-width: 1px;
+  stroke-width: 3px;
 }
 
 // .land:target {

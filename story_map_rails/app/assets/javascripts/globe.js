@@ -1,8 +1,7 @@
 $(document).ready(function(){
 
-  var width = 960,
-      height = 960;
-
+  var width = d3.select('#yield').node().getBoundingClientRect().width;
+      height = width;
   var title = d3.select("h1");
 
   var projection = d3.geoOrthographic()
@@ -58,7 +57,8 @@ $(document).ready(function(){
         borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
         n = countries.length;
 
-	  var colors = ['rgb(236,176,113)','rgb(233,204,76)','rgb(190,244,	157)','rgb(205,191,196	)','rgb(144,	187,98)','rgb(188,200,81)']
+	  var colors = ['rgb(236,176,113)','rgb(233,204,76)','rgb(190,244,	157)','rgb(205,191,196)','rgb(144,	187,98)','rgb(188,200,81)','rgb(230,209,158)','rgb(220,204,187)','rgb(254,232,176)']
+
     render = function() {
       svg.selectAll("*").remove();
       svg.append("path")
@@ -76,7 +76,8 @@ $(document).ready(function(){
     };
 
     render();
-    svg.selectAll('path.land').style("fill", function() { return colors[Math.floor(6*Math.random())]; });;
+    svg.selectAll('path.land').style("fill", function() { return colors[Math.floor(9*Math.random())]; });
+    // svg.selectAll('path.land:hover').style("fill", "#33CC33");
 
     //Adding countries to select
 
