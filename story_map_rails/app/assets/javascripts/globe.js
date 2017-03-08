@@ -11,38 +11,38 @@ $(document).ready(function(){
       .clipAngle(90)
       .precision(0.6);
 
-  // var canvas = d3.select("body").append("canvas")
-  //     .attr("width", width)
-  //     .attr("height", height);
   var svg = d3.select("#globe").append("svg")
     .attr("width", width)
     .attr("height", height)
-  // var c = canvas.node().getContext("2d");
 
   var path = d3.geoPath()
       .projection(projection)
-      // .context(c);
 
-  var λ = d3.scaleLinear()
-      .domain([0, width])
-      .range([-180, 180]);
-
-  var φ = d3.scaleLinear()
-      .domain([0, height])
-      .range([90, -90]);
-
-  // svg.on("mousemove", function() {
-  //   var p = d3.mouse(this);
-  //   projection.rotate([λ(p[0]), φ(p[1])]);
-  //   svg.selectAll("path").attr("d", path);
-  // });
+  var graticule = d3.geoGraticule()
+    .step([10, 10]);
 
   svg.call(d3.drag()
-    .on("drag", function() {
-      var p = d3.mouse(this);
-      projection.rotate([λ(p[0]), φ(p[1])]);
-      svg.selectAll("path").attr("d", path);
-    }));
+      .on("start", dragstarted)
+      .on("drag", dragged));
+
+    var render = function() {},
+        v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+        r0, // Projection rotation as Euler angles at start.
+        q0; // Projection rotation as versor at start.
+
+    function dragstarted() {
+      v0 = versor.cartesian(projection.invert(d3.mouse(this)));
+      r0 = projection.rotate();
+      q0 = versor(r0);
+    }
+
+    function dragged() {
+      var v1 = versor.cartesian(projection.rotate(r0).invert(d3.mouse(this))),
+          q1 = versor.multiply(q0, versor.delta(v0, v1)),
+          r1 = versor.rotation(q1);
+      projection.rotate(r1);
+      render();
+    }
 
   d3.queue()
       .defer(d3.json, "data/world-110m.json")
@@ -58,10 +58,35 @@ $(document).ready(function(){
         borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
         n = countries.length;
 
-    svg.insert("path", ".graticule")
-      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-      .attr("class", "boundary")
-      .attr("d", path);
+	  var colors = ['rgb(236,176,113)','rgb(233,204,76)','rgb(190,244,	157)','rgb(205,191,196	)','rgb(144,	187,98)','rgb(188,200,81)']
+    render = function() {
+      svg.selectAll("*").remove();
+      svg.append("path")
+        .datum({type: "Sphere"})
+        .attr("class", "water")
+        .attr("d", path);
+      svg.selectAll('path.graticule').data([graticule()])
+        .enter().append('path').classed('graticule', true)
+        .attr('d', path)
+        .exit().remove();
+      svg.selectAll('path.land').data(countries)
+        .enter().append("path")
+        .attr("class", "land")
+        .attr("d", path)
+    };
+
+    render();
+    svg.selectAll('path.land').style("fill", function() { return colors[Math.floor(6*Math.random())]; });;
+
+    //Adding countries to select
+
+    names.forEach(function(n) {
+      // countries[n.id] = n.name;
+      option = d3.select('#countries').append("option");
+      option.text(n.name);
+      option.property("value", n.id);
+    });
+    $('select').material_select();
 
     countries = countries.filter(function(d) {
       return names.some(function(n) {
@@ -70,29 +95,35 @@ $(document).ready(function(){
     }).sort(function(a, b) {
       return a.name.localeCompare(b.name);
     });
+    //Country focus on option select
 
-    // (function transition() {
-    //   d3.transition()
-    //       .duration(1250)
-    //       .on("start", function() {
-    //         title.text(countries[i = (i + 1) % n].name);
-    //       })
-    //       .tween("rotate", function() {
-    //         var p = d3.geoCentroid(countries[i]),
-    //             r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
-    //         return function(t) {
-    //           projection.rotate(r(t));
-    //           c.clearRect(0, 0, width, height);
-    //           c.fillStyle = "#ccc", c.beginPath(), path(land), c.fill();
-    //           c.fillStyle = "#f00", c.beginPath(), path(countries[i]), c.fill();
-    //           c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
-    //           c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
-    //         };
-    //       })
-    //     .transition()
-    //       .on("end", transition);
-    // })();
-  }
+    $(".select-wrapper").on("change", function() {
+      var rotate = projection.rotate(),
+      focusedCountry = country(countries, $("#countries").val()),
+      p = d3.geoCentroid(focusedCountry);
+      svg.selectAll(".focused").classed("focused", focused = false);
+    //Globe rotating
+
+    (function transition() {
+      d3.transition()
+        .duration(1000)
+      .tween("rotate", function() {
+        var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+        return function(t) {
+          projection.rotate(r(t));
+          svg.selectAll("path").attr("d", path)
+          .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
+        };
+      })
+    })();
+  });
+
+    function country(countries, selection) {
+      for(var i = 0, l = countries.length; i < l; i++) {
+        if(countries[i].id == selection) {return countries[i];}
+      }
+    };
+  };
 
   d3.select(self.frameElement).style("height", height + "px");
 });

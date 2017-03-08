@@ -14,6 +14,7 @@
  *= require_self
  */
  @import "materialize";
+
 #visualization rect {
    fill: blue;
  }
@@ -23,3 +24,43 @@
    font: 10px sans-serif;
    text-anchor: end;
  }
+
+.land {
+  fill: green;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.land:hover {
+  fill:#33CC33;
+  stroke-width: 1px;
+}
+
+// .land:target {
+//   fill:#33CC33;
+//   stroke-width: 1px;
+// }
+
+.graticule {
+  fill: none;
+  stroke: #79A09E;
+  stroke-width: 1;
+  stroke-dasharray: 1,1;
+}
+
+.water {
+  fill: aqua;
+}
+
+.country-info {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  background: #fff;
+  padding: 5px;
+  text-align: left;
+  border: solid #ccc 1px;
+  color: #666;
+  font-size: 14px;
+  font-family: sans-serif;
+}
