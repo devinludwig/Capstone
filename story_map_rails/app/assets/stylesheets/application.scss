@@ -17,6 +17,24 @@
 
 body {
   background-color: black;
+  color: white;
+  #graph {
+    position: fixed;
+    left:10px;
+    top:100px;
+  }
+}
+
+@media only screen and (min-width: 993px){
+.container {
+  width: 85%;
+}}
+
+.select-wrapper {
+  background-color: aqua;
+    input.select-dropdown, span.caret {
+    color: black;
+  }
 }
 
 #visualization rect {
@@ -38,13 +56,8 @@ body {
 
 .land:hover {
   fill:#33CC33;
-  stroke-width: 3px;
+  stroke-width: 2px;
 }
-
-// .land:target {
-//   fill:#33CC33;
-//   stroke-width: 1px;
-// }
 
 .graticule {
   fill: none;

@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-  var width = d3.select('#yield').node().getBoundingClientRect().width;
+  var width = d3.select('#yield').node().getBoundingClientRect().width*.8;
       height = width;
   var title = d3.select("h1");
 
@@ -59,25 +59,29 @@ $(document).ready(function(){
 
 	  var colors = ['rgb(236,176,113)','rgb(233,204,76)','rgb(190,244,	157)','rgb(205,191,196)','rgb(144,	187,98)','rgb(188,200,81)','rgb(230,209,158)','rgb(220,204,187)','rgb(254,232,176)']
 
+    svg.append("path")
+      .datum({type: "Sphere"})
+      .attr("class", "water")
+      .attr("d", path);
+
     render = function() {
-      svg.selectAll("*").remove();
-      svg.append("path")
-        .datum({type: "Sphere"})
-        .attr("class", "water")
-        .attr("d", path);
+      svg.selectAll("path.land, path.graticule").remove();
       svg.selectAll('path.graticule').data([graticule()])
         .enter().append('path').classed('graticule', true)
         .attr('d', path)
         .exit().remove();
-      svg.selectAll('path.land').data(countries)
+      var shapes = svg.selectAll('path.land').data(countries)
         .enter().append("path")
         .attr("class", "land")
-        .attr("d", path)
+        .attr("d", path);
+      shapes.on("mouseover", function() {
+        d3.select('#country').text("I'm a Country!")
+      }).on("mouseout",  function() {d3.select('#country').text("")});
     };
 
     render();
+
     svg.selectAll('path.land').style("fill", function() { return colors[Math.floor(9*Math.random())]; });
-    // svg.selectAll('path.land:hover').style("fill", "#33CC33");
 
     //Adding countries to select
 
@@ -100,26 +104,27 @@ $(document).ready(function(){
 
     $(".select-wrapper").on("change", function() {
       var rotate = projection.rotate(),
-      focusedCountry = country(countries, $("#countries").val()),
-      p = d3.geoCentroid(focusedCountry);
+        focusedCountry = findShapeById(countries, $("#countries").val()),
+        p = d3.geoCentroid(focusedCountry);
       svg.selectAll(".focused").classed("focused", focused = false);
     //Globe rotating
 
-    (function transition() {
-      d3.transition()
-        .duration(1000)
-      .tween("rotate", function() {
-        var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
-        return function(t) {
-          projection.rotate(r(t));
-          svg.selectAll("path").attr("d", path)
-          .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
-        };
-      })
-    })();
-  });
+      (function transition() {
+        d3.transition()
+          .duration(1000)
+        .tween("rotate", function() {
+          var r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+          return function(t) {
+            projection.rotate(r(t));
+            svg.selectAll("path").attr("d", path)
+            .classed("focused", function(d, i) { return d.id == focusedCountry.id ? focused = d : false; });
+          };
+        })
+      })();
+    });
 
-    function country(countries, selection) {
+
+    function findShapeById(countries, selection) {
       for(var i = 0, l = countries.length; i < l; i++) {
         if(countries[i].id == selection) {return countries[i];}
       }
