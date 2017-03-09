@@ -1,4 +1,5 @@
 // http://bl.ocks.org/mbostock/3943967
+// NASA Earth Exchange Downscaled Climate Projections, Ensemble Average, Epicodus
 $(document).ready(function(){
   // var width = d3.select('#yield').node().getBoundingClientRect().width;
   //     height = width;
@@ -33,7 +34,7 @@ $(document).ready(function(){
     xz = d3.range(m),
     yz = d3.range(n).map(function(index) {
       var sc = [];
-      variables[0][index].values.forEach(month => {
+      variables[2][index].values.forEach(month => {
       sc.push(+month.Value);});
       return sc;
     });
