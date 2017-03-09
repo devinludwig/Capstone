@@ -12,10 +12,10 @@ $(document).ready(function(){
 
   var svg = d3.select("#globe").append("svg")
     .attr("width", width)
-    .attr("height", height)
+    .attr("height", height);
 
   var path = d3.geoPath()
-      .projection(projection)
+      .projection(projection);
 
   var graticule = d3.geoGraticule()
     .step([10, 10]);
