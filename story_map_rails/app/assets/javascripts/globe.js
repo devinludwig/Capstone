@@ -20,28 +20,41 @@ $(document).ready(function(){
   var graticule = d3.geoGraticule()
     .step([10, 10]);
 
+  var zoom = d3.zoom()
+    .scaleExtent([1 / 2, 96])
+    .on("zoom", zoomed);
+
   svg.call(d3.drag()
       .on("start", dragstarted)
-      .on("drag", dragged));
+      .on("drag", dragged))
+    .call(zoom);
+    // .call(zoom.transform, d3.zoomIdentity);;
 
-    var render = function() {},
-        v0, // Mouse position in Cartesian coordinates at start of drag gesture.
-        r0, // Projection rotation as Euler angles at start.
-        q0; // Projection rotation as versor at start.
+  function zoomed() {
+    var t = d3.event.transform;
+      t.y = height * t.k;
+      svg.attr("transform", t);
+      // debugger;
+  }
 
-    function dragstarted() {
-      v0 = versor.cartesian(projection.invert(d3.mouse(this)));
-      r0 = projection.rotate();
-      q0 = versor(r0);
-    }
+  var render = function() {},
+      v0, // Mouse position in Cartesian coordinates at start of drag gesture.
+      r0, // Projection rotation as Euler angles at start.
+      q0; // Projection rotation as versor at start.
 
-    function dragged() {
-      var v1 = versor.cartesian(projection.rotate(r0).invert(d3.mouse(this))),
-          q1 = versor.multiply(q0, versor.delta(v0, v1)),
-          r1 = versor.rotation(q1);
-      projection.rotate(r1);
-      render();
-    }
+  function dragstarted() {
+    v0 = versor.cartesian(projection.invert(d3.mouse(this)));
+    r0 = projection.rotate();
+    q0 = versor(r0);
+  }
+
+  function dragged() {
+    var v1 = versor.cartesian(projection.rotate(r0).invert(d3.mouse(this))),
+        q1 = versor.multiply(q0, versor.delta(v0, v1)),
+        r1 = versor.rotation(q1);
+    projection.rotate(r1);
+    render();
+  }
 
   d3.queue()
       .defer(d3.json, "data/world-110m.json")
@@ -57,8 +70,6 @@ $(document).ready(function(){
         borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),
         n = countries.length;
 
-	  var colors = ['rgb(236,176,113)','rgb(233,204,76)','rgb(190,244,	157)','rgb(205,191,196)','rgb(144,	187,98)','rgb(188,200,81)','rgb(230,209,158)','rgb(220,204,187)','rgb(254,232,176)']
-
     svg.append("path")
       .datum({type: "Sphere"})
       .attr("class", "water")
@@ -67,21 +78,24 @@ $(document).ready(function(){
     render = function() {
       svg.selectAll("path.land, path.graticule").remove();
       svg.selectAll('path.graticule').data([graticule()])
-        .enter().append('path').classed('graticule', true)
+        .enter().insert('path').classed('graticule', true)
         .attr('d', path)
-        .exit().remove();
+        .exit();
       var shapes = svg.selectAll('path.land').data(countries)
         .enter().append("path")
         .attr("class", "land")
         .attr("d", path);
-      shapes.on("mouseover", function() {
-        d3.select('#country').text("I'm a Country!")
-      }).on("mouseout",  function() {d3.select('#country').text("")});
+      shapes.on("mouseover", function(datum) {
+        d3.select('#country').text(findNameById(names, datum.id).name)
+      })
+      .on("mouseout", function() {d3.select('#country').text('')})
+      .on("click", function(datum) {
+        console.log(d3.mouse(this));
+        // get(JSON.stringify(datum.geometry.coordinates[0]))
+      });
     };
 
     render();
-
-    svg.selectAll('path.land').style("fill", function() { return colors[Math.floor(9*Math.random())]; });
 
     //Adding countries to select
 
@@ -127,6 +141,11 @@ $(document).ready(function(){
     function findShapeById(countries, selection) {
       for(var i = 0, l = countries.length; i < l; i++) {
         if(countries[i].id == selection) {return countries[i];}
+      }
+    };
+    function findNameById(names, id) {
+      for(var i = 0, l = names.length; i < l; i++) {
+        if(names[i].id == id) {return names[i];}
       }
     };
   };

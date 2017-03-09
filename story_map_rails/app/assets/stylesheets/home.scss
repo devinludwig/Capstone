@@ -1,3 +1,23 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$colors: rgb(236,176,113),rgb(233,204,76),rgb(190,244,	157),rgb(205,191,196),rgb(144,	187,98),rgb(188,200,81),rgb(230,209,158),rgb(220,204,187),rgb(254,232,176);
+
+@for $i from 1 through 174 {
+    path.land:nth-child(#{length($colors)}n+#{$i}) {
+        fill: nth($colors, random(length($colors)));
+    }
+}
+
+.land {
+  // fill: green;
+  stroke: black;
+  stroke-width: 1px;
+  transition: fill .4s;
+}
+
+.land:hover, .land:active {
+  fill:white !important;
+  stroke-width: 2px;
+}

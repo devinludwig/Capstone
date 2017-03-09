@@ -19,20 +19,28 @@ body {
   background-color: black;
   color: white;
   #graph {
+    display: none;
     position: fixed;
     left:10px;
     top:100px;
   }
+  nav {
+    background-color: green;
+  }
 }
 
 @media only screen and (min-width: 993px){
-.container {
-  width: 85%;
-}}
+  .container {
+    width: 85%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
 
 .select-wrapper {
   background-color: aqua;
-    input.select-dropdown, span.caret {
+  padding-left: 10px;
+    input.select-dropdown {
     color: black;
   }
 }
@@ -46,18 +54,6 @@ body {
    font: 10px sans-serif;
    text-anchor: end;
  }
-
-.land {
-  fill: green;
-  stroke: black;
-  stroke-width: 1px;
-  transition: fill .4s;
-}
-
-.land:hover {
-  fill:#33CC33;
-  stroke-width: 2px;
-}
 
 .graticule {
   fill: none;
