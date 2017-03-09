@@ -15,7 +15,24 @@
  */
  @import "materialize";
 
+.round-image-50 {
+    background-color: white;
+    border: 1px solid #d9d9d9;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    height: 50px;
+    width: 50px;
+    overflow: hidden;
+    text-align: center;
+    img { width: 100% }
+}
+
 body {
+  font-family: 'Rubik Mono One', sans-serif;
+  .modal {
+    background:rgba(0,0,0, 0.7);
+  }
   background-color: black;
   color: white;
   #graph {
@@ -28,6 +45,9 @@ body {
     background-color: green;
   }
   .axis, .tick {
+    line {
+      stroke: white;
+    }
     stroke: white;
   }
 }

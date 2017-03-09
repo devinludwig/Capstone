@@ -1,0 +1,67 @@
+<div  id="modal4" class="modal">
+  <div class="modal-content">
+    <h4 class="center">Edit <%= current_user.username %>'s Profile</h4>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= devise_error_messages! %>
+
+      <div class="row">
+        <div class="input-field col s6">
+          <%= f.email_field :email, autofocus: true, value: current_user.email %>
+          <%= f.label :email %><br />
+        </div>
+
+        <div class="input-field col s6">
+          <%= f.text_field :username, value: current_user.username %>
+          <%= f.label :username, class: 'active' %>
+        </div>
+      </div>
+
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>Avatar Image</span>
+          <%= f.file_field :avatar %>
+        </div>
+        <div class="file-path-wrapper">
+         <input class="file-path validate" type="text">
+        </div>
+      </div>
+
+      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+      <% end %>
+
+      <div class="row">
+        <div class="input-field col s6">
+          <%= f.password_field :password, autocomplete: "off" %>
+          <%= f.label :password %>
+          <% if @minimum_password_length %>
+            <br />
+            <em><%= @minimum_password_length %> characters minimum</em>
+          <% end %>
+        </div>
+
+        <div class="input-field col s6">
+          <%= f.password_field :password_confirmation, autocomplete: "off" %>
+          <%= f.label :password_confirmation %><br />
+        </div>
+        <i>(leave blank if you don't want to change it)</i><br />
+      </div>
+
+      <div class="input-field">
+        <%= f.label :current_password %>
+        <%= f.password_field :current_password, autocomplete: "off" %>
+        <i>(we need your current password to confirm your changes)</i><br />
+      </div>
+
+      <div class="actions">
+        <%= f.submit "Update", class: "btn waves-effect" %>
+      </div>
+    <% end %>
+
+    <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), class: "btn waves-effect", data: { confirm: "Are you sure?" }, method: :delete %></p>
+
+    <%= link_to "Back", :back %>
+
+  </div>
+</div>

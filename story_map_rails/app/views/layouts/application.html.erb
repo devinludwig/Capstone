@@ -3,7 +3,9 @@
   <head>
     <title>StoryMap</title>
     <%= csrf_meta_tags %>
-
+    <%= favicon_link_tag 'favicon.ico' %>
+    <link href="https://fonts.googleapis.com/css?family=Rubik+Mono+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -15,14 +17,70 @@
       <div class="nav-wrapper">
         <a href="/" class="brand-logo">PlanetWatch</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><%= link_to "Projects" %></li>
-          <li><%= link_to "About" %></li>
-          <li></li>
+
+          <% if user_signed_in? %>
+            <li><a class="dropdown-button" href="#!" data-activates="dropdown1"><strong> <%= current_user.username %></strong><i class="material-icons right">arrow_drop_down</i></a></li>
+            <li class="round-image-50"><%= image_tag(current_user.avatar.url(:thumb)) %></li>
+            <ul id="dropdown1" class="dropdown-content">
+              <li><%= link_to "Profile", current_user %></li>
+              <li class="divider"></li>
+              <li><%= link_to 'Edit Profile', edit_user_registration_path, href: '#modal4', class: 'modal-trigger', remote: true %></li>
+              <li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
+            </ul>
+           <% else %>
+             <li><%= link_to "Login", new_user_session_path, href: '#modal2', class: 'modal-trigger', remote: true %></li>
+             <li><%= link_to "About" %></li>
+           <% end %>
         </ul>
       </div>
     </nav>
+
     <div class="container" id="yield">
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
       <%= yield %>
     </div>
+
+    <%= render 'users/registrations/new' %>
+
+    <div id="modal2" class="modal">
+      <div class="modal-content">
+
+        <h2 class="center">Login</h2>
+
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="input-field">
+            <%= f.label :email %><br />
+            <%= f.email_field :email, autofocus: true %>
+          </div>
+
+          <div class="input-field">
+            <%= f.label :password %><br />
+            <%= f.password_field :password, autocomplete: "off" %>
+          </div>
+
+          <% if devise_mapping.rememberable? -%>
+            <div class="field">
+              <%= f.check_box :remember_me %>
+              <%= f.label :remember_me %>
+            </div>
+          <% end -%>
+
+          <div class="actions">
+            <%= f.submit "Log in", class: "btn waves-effect" %>
+          </div>
+        <% end %>
+
+        <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+        <%= link_to "Need an account? Sign up here.", new_user_registration_path, href: '#modal1', class: 'modal-trigger modal-close', remote: true %><br />
+        <% end -%>
+        <%= render "users/shared/links" %>
+
+      </div>
+    </div>
+    <% if current_user %>
+      <%= render 'users/registrations/edit' %>
+    <% end %>
   </body>
+
 </html>
