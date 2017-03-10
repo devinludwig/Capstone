@@ -18,6 +18,7 @@ $colors: rgb(236,176,113),rgb(233,204,76),rgb(190,244,	157),rgb(205,191,196),rgb
 }
 
 .land:hover, .land:active {
-  fill:white !important;
+  fill:black !important;
+  fill-opacity:.4 !important;
   stroke-width: 2px;
 }

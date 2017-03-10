@@ -15,7 +15,7 @@
   <body>
     <nav>
       <div class="nav-wrapper">
-        <a href="/" class="brand-logo">PlanetWatch</a>
+        <%= link_to "PlanetWatch", root_path, class:"brand-logo" %>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
 
           <% if user_signed_in? %>
@@ -24,7 +24,7 @@
             <ul id="dropdown1" class="dropdown-content">
               <li><%= link_to "Profile", current_user %></li>
               <li class="divider"></li>
-              <li><%= link_to 'Edit Profile', edit_user_registration_path, href: '#modal4', class: 'modal-trigger', remote: true %></li>
+              <li><%= link_to 'Edit Account', edit_user_registration_path, href: '#modal4', class: 'modal-trigger', remote: true %></li>
               <li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
             </ul>
            <% else %>

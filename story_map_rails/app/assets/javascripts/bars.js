@@ -26,13 +26,13 @@ $(document).ready(function(){
     });
     console.log(variables[0]);
     var n = 5, // The number of series.
-    m = 670, // The number of values per series.
+      m = 670, // The number of values per series.
     // The xz array has m elements, representing the x-values shared by all series.
     // The yz array has n elements, representing the y-values of each of the n series.
     // Each yz[i] is an array of m non-negative numbers representing a y-value for xz[i].
     // The y01z array has the same structure as yz, but with stacked [y₀, y₁] instead of y.
-    xz = d3.range(m),
-    yz = d3.range(n).map(function(index) {
+      xz = d3.range(m),
+      yz = d3.range(n).map(function(index) {
       var sc = [];
       variables[2][index].values.forEach(month => {
       sc.push(+month.Value);});
@@ -71,7 +71,7 @@ $(document).ready(function(){
   var rect = series.selectAll("rect")
     .data(function(d) { return d; })
     .enter().append("rect")
-      .attr("x", function(d, i) { return x(i); })
+      .attr("x", function(d, i) { return x(i) - 296; })
       .attr("y", height)
       .attr("width", x.bandwidth())
       .attr("height", 0);
@@ -83,9 +83,9 @@ $(document).ready(function(){
 
   g.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(-296," + height + ")")
       .call(d3.axisBottom(x)
-          .ticks(400)
+          // .ticks(400)
           // .tickSize(0)
           // .tickPadding(6)
         );
@@ -111,7 +111,7 @@ $(document).ready(function(){
     rect.transition()
         .duration(500)
         .delay(function(d, i) { return i * 10; })
-        .attr("x", function(d, i) { return x(i) + x.bandwidth() / n * this.parentNode.__data__.key; })
+        .attr("x", function(d, i) { return x(i) + x.bandwidth() / n * this.parentNode.__data__.key - 296; })
         .attr("width", x.bandwidth() / n)
       .transition()
         .attr("y", function(d) { return y(d[1] - d[0]); })
@@ -127,7 +127,7 @@ $(document).ready(function(){
         .attr("y", function(d) { return y(d[1]); })
         .attr("height", function(d) { return y(d[0]) - y(d[1]); })
       .transition()
-        .attr("x", function(d, i) { return x(i); })
+        .attr("x", function(d, i) { return x(i) - 296; })
         .attr("width", x.bandwidth());
     }
   });
